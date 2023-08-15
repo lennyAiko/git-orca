@@ -1,0 +1,18 @@
+{
+  "name": "clack-test",
+  "version": "1.0.0",
+  "type": "module",
+  "description": "This is a simple To-do CLI",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Lennox Charles",
+  "license": "ISC",
+  "dependencies": {
+    "@clack/prompts": "^0.7.0",
+    "@octokit/rest": "^20.0.1",
+    "minimist": "^1.2.8",
+    "picocolors": "^1.0.0"
+  }
+}
