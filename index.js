@@ -2,6 +2,7 @@ import { confirm, intro, outro, select, spinner, text } from '@clack/prompts'
 import minimist from 'minimist'
 import color from 'picocolors'
 import { Octokit } from '@octokit/rest'
+import { writeToFile } from './data/index.js'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -64,10 +65,10 @@ if (git.data.length < 1) {
 } else {
     switch(selection){
         case('issue'):
-            outro(`Found ${git.data
+            outro(writeToFile(git.data
                     .map((item) => (item.pull_request ? null : item))
-                    .filter((item) => item).length
-                } here`)
+                    .filter((item) => item)
+                ))
             break
         case('pr'):
             outro(`Found ${git.data
