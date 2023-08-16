@@ -63,14 +63,17 @@ s.stop(`Done fetching...`)
 if (git.data.length < 1) {
     outro(`Found no ${selection} here`)
 } else {
+    s.start('Writing to file...')
     switch(selection){
         case('issue'):
+            s.stop('Done writing to file...')
             outro(writeToFile(git.data
                     .map((item) => (item.pull_request ? null : item))
                     .filter((item) => item)
                 ))
             break
         case('pr'):
+            s.stop('Done writing to file...')
             outro(`Found ${git.data
                 .map((item) => item.pull_request)
                 .filter((item) => item).length
@@ -78,5 +81,4 @@ if (git.data.length < 1) {
             break
         default: `Found ${git.data.length} here`
     }
-    
 }
