@@ -1,11 +1,10 @@
 import fs from 'fs'
 
 var message = ""
-let store = []
 
-export function writeToFile(data) {
+export function writeToFileIssues(data) {
+    let store = []
     try {
-        
         data.map(item => {
             store.push({
                 url: item.url,
@@ -20,10 +19,26 @@ export function writeToFile(data) {
             })
         })
 
-        fs.writeFile('./data/data.json', JSON.stringify(store, null, 2), err => {
+        fs.writeFile('./data.json', 
+        JSON.stringify(store, null, 2), 
+        err => {
             if(err) console.log(err)
         })
-        message = 'Check `data/data.json` for results'
+        message = 'Check `data.json` for results'
+    } catch (err) {
+        console.log(err)
+        message = 'There was an error storing your result'
+    }
+    return message
+}
+
+export function writeToFilePR(data) {
+        try {
+        console.log(data) 
+        fs.writeFile('./data/data.json', JSON.stringify(data, null, 2), err => {
+            if(err) console.log(err)
+        })
+        message = 'Check `data.json` for results'
     } catch (err) {
         console.log(err)
         message = 'There was an error storing your result'

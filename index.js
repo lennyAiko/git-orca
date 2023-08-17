@@ -2,7 +2,7 @@ import { confirm, intro, outro, select, spinner, text } from '@clack/prompts'
 import minimist from 'minimist'
 import color from 'picocolors'
 import { Octokit } from '@octokit/rest'
-import { writeToFile } from './data/index.js'
+import { writeToFilePR, writeToFileIssues } from './helpers/index.js'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -28,8 +28,8 @@ const selection = await select({
     ]
 })
 
-const repo_state = await select({
-    message: 'Do you want open or closed?',
+const repo_state = await select({ 
+    messagse: 'Do you want open or closed?',
     options: [
         {value: 'open', label: 'open'},
         {value: 'closed', label: 'closed'}
@@ -43,7 +43,7 @@ const page_number = await text({
 
 const per_page = await text({
     message: 'How many per page?',
-    placeholder: '< 100'
+    placeholder: '<= 100'
 })
 
 const s = spinner()
@@ -67,17 +67,19 @@ if (git.data.length < 1) {
     switch(selection){
         case('issue'):
             s.stop('Done writing to file...')
-            outro(writeToFile(git.data
-                    .map((item) => (item.pull_request ? null : item))
-                    .filter((item) => item)
-                ))
+            outro(writeToFileIssues(
+                git.data
+                .map((item) => (item.pull_request ? null : item))
+                .filter((item) => item)
+            ))
             break
         case('pr'):
             s.stop('Done writing to file...')
-            outro(`Found ${git.data
+            outro(writeToFilePR(
+                git.data
                 .map((item) => item.pull_request)
-                .filter((item) => item).length
-                } here`)
+                .filter((item) => item)
+            ))
             break
         default: `Found ${git.data.length} here`
     }
