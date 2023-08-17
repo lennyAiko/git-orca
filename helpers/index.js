@@ -37,7 +37,7 @@ export function writeToFileIssues(data) {
 
 export function writeToFilePR(data) {
     try {
-        fs.writeFile('./data/data.json', JSON.stringify(data, null, 2), err => {
+        fs.writeFile('./data.json', JSON.stringify(data, null, 2), err => {
             if(err) console.log(err)
         })
         message = 'Check `data.json` for results'
@@ -47,99 +47,23 @@ export function writeToFilePR(data) {
     return message
 }
 
-export async function CLI(octokit) {
-    intro(color.inverse('clacky'))
-
-    const repo_owner = await text({
-        message: 'Who is the owner of the repo?',
-        placeholder: 'lennyaiko'
-    })
-
-    const repo_name = await text({
-        message: 'What is the name of the repo?',
-        placeholder: 'clacky'
-    })
-
-    const selection = await select({
-        message: 'Do you want to view issues or PR?',
-        options: [
-            {value: 'issue', label: 'issues'},
-            {value: 'PR', label: 'pull requests'}
-        ]
-    })
-
-    const repo_state = await select({ 
-        message: 'Do you want open or closed?',
-        options: [
-            {value: 'open', label: 'open'},
-            {value: 'closed', label: 'closed'}
-        ]
-    })
-
-    const page_number = await text({
-        message: 'What page do you want to view?',
-        placeholder: '>= 1'
-    })
-
-    const per_page = await text({
-        message: 'How many per page?',
-        placeholder: '<= 100'
-    })
-
-    const s = spinner()
-
-    s.start(`Fetching...`)
-
-    const git = await octokit.issues.listForRepo({
-        owner: repo_owner,
-        repo: repo_name,
-        per_page: per_page,
-        page: page_number,
-        state: repo_state
-    })
-
-    s.stop(`Done fetching...`)
-
-    if (git.data.length < 1) {
-        outro(`Found no ${selection}s here`)
-    } else {
-        s.start('Writing to file...')
-        switch(selection){
-            case('issue'):
-                s.stop('Done writing to file...')
-                outro(writeToFileIssues(
-                    git.data
-                    .map((item) => (item.pull_request ? null : item))
-                    .filter((item) => item)
-                ))
-                break
-            case('pr'):
-                s.stop('Done writing to file...')
-                outro(writeToFilePR(
-                    git.data
-                    .map((item) => item.pull_request)
-                    .filter((item) => item)
-                ))
-                break
-            default: `Found ${git.data.length} here`
-        }
-    }
-
-}
-
-export async function flagCLI(octokit, argv) { 
+export async function CLI(octokit, argv) { 
     
     intro('clacky')
 
-    const repo_owner = await text({
-        message: 'Who is the owner of the repo?',
-        placeholder: 'lennyaiko'
-    })
+    if (!argv.owner) {
+        var repo_owner = await text({
+            message: 'Who is the owner of the repo?',
+            placeholder: 'lennyaiko'
+        })
+    }
 
-    const repo_name = await text({
-        message: 'What is the name of the repo?',
-        placeholder: 'clacky'
-    })
+    if (!argv.name) {
+        var repo_name = await text({
+            message: 'What is the name of the repo?',
+            placeholder: 'clacky'
+        })
+    }
 
     if (!argv.issue && !argv.pr) {
         var selection = await select({
@@ -180,8 +104,8 @@ export async function flagCLI(octokit, argv) {
     s.start(`Fetching...`)
 
     const git = await octokit.issues.listForRepo({
-        owner: repo_owner,
-        repo: repo_name,
+        owner: argv.owner ? argv.owner : repo_owner,
+        repo: argv.name ? argv.name : repo_name,
         per_page: argv.pp ? argv.pp : per_page,
         page: argv.p ? argv.p : page_number,
         state: (function () {
