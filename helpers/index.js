@@ -1,6 +1,6 @@
 import fs from 'fs'
 import color from 'picocolors'
-import { confirm, intro, outro, select, spinner, text } from '@clack/prompts'
+import { confirm, intro, isCancel, outro, select, spinner, text, cancel } from '@clack/prompts'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -47,6 +47,13 @@ export function writeToFilePR(data) {
     return message
 }
 
+function close(value) {
+    if(isCancel(value)) {
+        cancel('Thanks for trying Clack, see you later!')
+        process.exit(0)
+    }
+}
+
 export async function CLI(octokit, argv) { 
     
     intro('clacky')
@@ -54,8 +61,11 @@ export async function CLI(octokit, argv) {
     if (!argv.owner) {
         var repo_owner = await text({
             message: 'Who is the owner of the repo?',
-            placeholder: 'lennyaiko'
+            placeholder: 'lennyaiko',
+            defaultValue: 'lennyaiko'
         })
+        
+        close(repo_owner)
     }
 
     if (!argv.name) {
@@ -63,6 +73,8 @@ export async function CLI(octokit, argv) {
             message: 'What is the name of the repo?',
             placeholder: 'clacky'
         })
+
+        close(repo_name)
     }
 
     if (!argv.issue && !argv.pr) {
@@ -73,6 +85,7 @@ export async function CLI(octokit, argv) {
                 {value: 'PR', label: 'pull requests'}
             ]
         })
+        close(repo_owner)
     }
 
     if (!argv.open && !argv.closed) {
@@ -83,6 +96,7 @@ export async function CLI(octokit, argv) {
                 {value: 'closed', label: 'closed'}
             ]
         })
+        close(repo_owner)
     }
 
     if (!argv.p) {
@@ -90,6 +104,7 @@ export async function CLI(octokit, argv) {
             message: 'What page do you want to view?',
             placeholder: '>= 1'
         })
+        close(repo_owner)
     }
 
     if (!argv.pp) {
@@ -97,6 +112,7 @@ export async function CLI(octokit, argv) {
             message: 'How many per page?',
             placeholder: '<= 100'
         })
+        close(repo_owner)
     }
 
     const s = spinner()
