@@ -28,7 +28,7 @@ export function writeToFileIssues(data) {
         err => {
             if(err) console.log('Could not store')
         })
-        message = 'Check `data.json` for results'
+        message = 'Check data.json for results'
     } catch (err) {
         message = 'There was an error storing your result'
     }
@@ -40,7 +40,7 @@ export function writeToFilePR(data) {
         fs.writeFile('./data.json', JSON.stringify(data, null, 2), err => {
             if(err) console.log(err)
         })
-        message = 'Check `data.json` for results'
+        message = 'Check data.json for results'
     } catch (err) {
         message = 'There was an error storing your result'
     }
@@ -56,7 +56,7 @@ function close(value) {
 
 export async function CLI(octokit, argv) { 
     
-    intro('clacky')
+    intro('git-orca')
 
     if (!argv.owner) {
         var repo_owner = await text({
@@ -71,17 +71,18 @@ export async function CLI(octokit, argv) {
     if (!argv.name) {
         var repo_name = await text({
             message: 'What is the name of the repo?',
-            placeholder: 'clacky'
+            placeholder: 'git-orca',
+            defaultValue: 'git-orca'
         })
 
         close(repo_name)
     }
 
-    if (!argv.issue && !argv.pr) {
+    if (!argv.issues && !argv.pr) {
         var selection = await select({
             message: 'Do you want to view issues or PR?',
             options: [
-                {value: 'issue', label: 'issues', hint: 'to contribute'},
+                {value: 'issues', label: 'issues', hint: 'to contribute'},
                 {value: 'PR', label: 'pull requests'}
             ]
         })
@@ -102,7 +103,8 @@ export async function CLI(octokit, argv) {
     if (!argv.p) {
         var page_number = await text({
             message: 'What page do you want to view?',
-            placeholder: '>= 1'
+            placeholder: '>= 1',
+            defaultValue: '1'
         })
         close(repo_owner)
     }
@@ -110,14 +112,15 @@ export async function CLI(octokit, argv) {
     if (!argv.pp) {
         var per_page = await text({
             message: 'How many per page?',
-            placeholder: '<= 100'
+            placeholder: '<= 100',
+            defaultValue: '30'
         })
         close(repo_owner)
     }
 
     const s = spinner()
 
-    s.start(`Fetching...`)
+    s.start(color.yellow('Fetching...'))
 
     const git = await octokit.issues.listForRepo({
         owner: argv.owner ? argv.owner : repo_owner,
@@ -133,32 +136,38 @@ export async function CLI(octokit, argv) {
         })()
     })
 
-    s.stop('Done fetching...')
+    s.stop(color.green('Done fetching...'))
 
     if (git.data.length < 1) {
-        outro(`Found no ${selection}s here`)
+        outro(color.red(`Found no ${selection}s here`))
     } else {
-        s.start('Writing to file...')
-        switch(selection){
-            case('issue'):
-                s.stop('Done writing to file...')
-                outro(writeToFileIssues(
+        s.start(color.yellow('Writing to file...'))
+        switch(
+            (function () {
+                if (!selection) {
+                    if (argv.issues) return 'issues'
+                    if (argv.pr) return 'pr'
+                }
+            })()
+        )
+        {
+            case('issues'):
+                s.stop(color.green('Done writing to file...'))
+                outro(color.green(writeToFileIssues(
                     git.data
                     .map((item) => (item.pull_request ? null : item))
-                    .filter((item) => item)
+                    .filter((item) => item))
                 ))
                 break
             case('pr'):
-                s.stop('Done writing to file...')
-                outro(writeToFilePR(
+                s.stop(color.green('Done writing to file...'))
+                outro(color.green(writeToFilePR(
                     git.data
                     .map((item) => item.pull_request)
-                    .filter((item) => item)
+                    .filter((item) => item))
                 ))
                 break
-            default: `Found ${git.data.length} here`
+            default: color.green(`Found ${git.data.length} issues / PRs here`)
         }
     }
-
-    s.stop()
 }
