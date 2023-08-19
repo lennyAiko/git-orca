@@ -2,13 +2,17 @@
   "name": "git-orca",
   "version": "1.0.0",
   "type": "module",
-  "description": "This is a simple To-do CLI",
+  "description": "A CLI tool to retrieve GitHub issues/PRs from a project and store in JSON.",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Lennox Charles",
   "license": "ISC",
+  "git repository": "https://github.com/lennyAiko/git-orca",
+  "keywords": [
+    "git", "github", "issues", "pr", "git-issues", "git-pr", "cli", "cli-app"
+  ],
   "dependencies": {
     "@clack/prompts": "^0.7.0",
     "@octokit/rest": "^20.0.1",

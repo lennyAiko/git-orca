@@ -8,9 +8,11 @@ var message = ""
 
 export function writeToFileIssues(data) {
     let store = []
+    let count = 1
     try {
         data.map(item => {
             store.push({
+                count: count++,
                 url: item.url,
                 title: item.title,
                 state: item.state,
@@ -24,11 +26,14 @@ export function writeToFileIssues(data) {
         })
 
         fs.writeFile('./data.json', 
-        JSON.stringify(store, null, 2), 
+        JSON.stringify({
+            total: store.length, 
+            data: store
+        }, null, 2), 
         err => {
             if(err) console.log('Could not store')
         })
-        message = 'Check data.json for results'
+        message = 'Check data.json for result'
     } catch (err) {
         message = 'There was an error storing your result'
     }
@@ -37,7 +42,12 @@ export function writeToFileIssues(data) {
 
 export function writeToFilePR(data) {
     try {
-        fs.writeFile('./data.json', JSON.stringify(data, null, 2), err => {
+        fs.writeFile('./data.json', 
+        JSON.stringify({
+            total: data.length, 
+            data
+        }, null, 2), 
+        err => {
             if(err) console.log(err)
         })
         message = 'Check data.json for results'
@@ -88,6 +98,8 @@ export async function CLI(octokit, argv) {
         })
         close(repo_owner)
     }
+
+    argv.issues ? selection = 'issues' : selection = 'pr'
 
     if (!argv.open && !argv.closed) {
         var repo_state = await select({ 
@@ -142,14 +154,7 @@ export async function CLI(octokit, argv) {
         outro(color.red(`Found no ${selection}s here`))
     } else {
         s.start(color.yellow('Writing to file...'))
-        switch(
-            (function () {
-                if (!selection) {
-                    if (argv.issues) return 'issues'
-                    if (argv.pr) return 'pr'
-                }
-            })()
-        )
+        switch(selection)
         {
             case('issues'):
                 s.stop(color.green('Done writing to file...'))
