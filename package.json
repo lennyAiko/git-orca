@@ -3,6 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "description": "A CLI tool to retrieve GitHub issues/PRs from a project and store in JSON.",
+  "bin": {
+    "git-orca": "./index.js"
+  },
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
