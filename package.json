@@ -14,8 +14,22 @@
   "license": "MIT",
   "git repository": "https://github.com/lennyAiko/git-orca.git",
   "keywords": [
-    "git", "github", "issues", "pr", "git-issues", "git-pr", "cli", "cli-app"
+    "git",
+    "github",
+    "issues",
+    "pr",
+    "git-issues",
+    "git-pr",
+    "cli",
+    "cli-app"
   ],
+  "bugs": {
+    "url": "https://github.com/lennyAiko/git-orca/issues"
+  },
+  "homepage": "https://github.com/lennyAiko/git-orca",
+  "engines": {
+    "node": "^14.13.1 || >=16.0.0"
+  },
   "dependencies": {
     "@clack/prompts": "^0.7.0",
     "@octokit/rest": "^20.0.1",

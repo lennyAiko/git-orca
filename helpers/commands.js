@@ -4,7 +4,7 @@ import { confirm, intro, isCancel, outro, select, spinner, text, cancel } from '
 import dotenv from 'dotenv'
 dotenv.config()
 
-var message = ""
+var message
 
 function writeToFileIssues(data) {
     let store = []
@@ -69,23 +69,23 @@ export async function CLI(octokit, argv) {
     intro('git-orca')
 
     if (!argv.owner) {
-        var repo_owner = await text({
+        var repoOwner = await text({
             message: 'Who is the owner of the repo?',
             placeholder: 'lennyaiko',
             defaultValue: 'lennyaiko'
         })
         
-        close(repo_owner)
+        close(repoOwner)
     }
 
     if (!argv.name) {
-        var repo_name = await text({
+        var repoName = await text({
             message: 'What is the name of the repo?',
             placeholder: 'git-orca',
             defaultValue: 'git-orca'
         })
 
-        close(repo_name)
+        close(repoName)
     }
 
     if (!argv.issues && !argv.pr) {
@@ -96,39 +96,39 @@ export async function CLI(octokit, argv) {
                 {value: 'PR', label: 'pull requests'}
             ]
         })
-        close(repo_owner)
+        close(selection)
     }
 
     if (argv.issues) selection = 'issues'
     if (argv.pr) selection = 'pr'
 
     if (!argv.open && !argv.closed) {
-        var repo_state = await select({ 
+        var repoState = await select({ 
             message: 'Do you want open or closed?',
             options: [
                 {value: 'open', label: 'open'},
                 {value: 'closed', label: 'closed'}
             ]
         })
-        close(repo_owner)
+        close(repoState)
     }
 
     if (!argv.p) {
-        var page_number = await text({
+        var pageNumber = await text({
             message: 'What page do you want to view?',
             placeholder: '>= 1',
             defaultValue: '1'
         })
-        close(repo_owner)
+        close(pageNumber)
     }
 
     if (!argv.pp) {
-        var per_page = await text({
+        var perPage = await text({
             message: 'How many per page?',
             placeholder: '<= 100',
             defaultValue: '30'
         })
-        close(repo_owner)
+        close(perPage)
     }
 
     const s = spinner()
@@ -136,12 +136,12 @@ export async function CLI(octokit, argv) {
     s.start(color.yellow('Fetching...'))
 
     const git = await octokit.issues.listForRepo({
-        owner: argv.owner ? argv.owner : repo_owner,
-        repo: argv.name ? argv.name : repo_name,
-        per_page: argv.pp ? argv.pp : per_page,
-        page: argv.p ? argv.p : page_number,
+        owner: argv.owner ? argv.owner : repoOwner,
+        repo: argv.name ? argv.name : repoName,
+        per_page: argv.pp ? argv.pp : perPage,
+        page: argv.p ? argv.p : pageNumber,
         state: (function () {
-            if (!repo_state) {
+            if (!repoState) {
                 if (argv.open) return 'open'
                 if (argv.closed) return 'closed'
             }

@@ -51,14 +51,10 @@ replace `github_access_token` with your github personal access token
 
 For a quick start, after installation/setting up the repo just run the below command. This would start an interactive session for you to provide the necessary info about the repository.
 
+1. Install the package
+
 ```bash
 node index.js
-```
-
-or
-
-```bash
-npx git-orca
 ```
 
 Alternatively, you can provide the information about the repo on execution of the script with flags:

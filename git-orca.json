@@ -1,0 +1,29 @@
+{
+  "total": 2,
+  "data": [
+    {
+      "count": 1,
+      "url": "https://api.github.com/repos/lennyAiko/git-orca/issues/2",
+      "title": "Weird Behaviour",
+      "state": "closed",
+      "number": 2,
+      "user": "Emmo00",
+      "user_url": "https://api.github.com/users/Emmo00",
+      "created_at": "2023-08-18T22:34:35Z",
+      "updated_at": "2023-08-19T00:10:42Z",
+      "body": "when I try to run the scrip by passing all the flags on execution\r\n```bash\r\nnode index.js --owner emmo00 --name learn-c --issue --closed --p 1 --pp 1\r\n```\r\nNo info about the execution is returned.\r\n![image](https://github.com/lennyAiko/git-orca/assets/88244468/938743f5-2289-4626-b7b2-eaa43a07753a)\r\n\r\nThis behavior is because, when we run it like this, the value of `argv.issue` is a boolean `true`, and not what is checked by the switch block (\"issue\"). this causes the switch to run the default code, which does not actually do anything (you probably forgot to add a output function to that string :D"
+    },
+    {
+      "count": 2,
+      "url": "https://api.github.com/repos/lennyAiko/git-orca/issues/1",
+      "title": "Add README.md file",
+      "state": "closed",
+      "number": 1,
+      "user": "Emmo00",
+      "user_url": "https://api.github.com/users/Emmo00",
+      "created_at": "2023-08-17T21:59:40Z",
+      "updated_at": "2023-08-18T23:21:09Z",
+      "body": null
+    }
+  ]
+}
