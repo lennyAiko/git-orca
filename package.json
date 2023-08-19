@@ -8,7 +8,7 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "author": "Lennox Charles",
-  "license": "ISC",
+  "license": "MIT",
   "git repository": "https://github.com/lennyAiko/git-orca",
   "keywords": [
     "git", "github", "issues", "pr", "git-issues", "git-pr", "cli", "cli-app"

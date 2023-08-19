@@ -9,7 +9,7 @@ To use this tool, the below listed are required
 - [Node.js](https://nodejs.org/en/download)
 - Github access token. How to get one [here](https://docs.github.com/en/authentication/keeping-your-account-and-data-secure/managing-your-personal-access-tokens#creating-a-personal-access-token-classic)
 
-## Installation/Setup
+## Setup
 
 1. Clone this repository to your local machine
 
@@ -29,6 +29,8 @@ cd git-orca
 npm install
 ```
 
+<!-- change configuring .env file -->
+
 4. Create a `.env` file
 
 ```bash
@@ -44,6 +46,8 @@ GITHUB_ACCESS_TOKEN=<github_access_token>
 
 > **NOTE**
 replace `github_access_token` with your github personal access token
+
+## Installation
 
 ## Usage
 

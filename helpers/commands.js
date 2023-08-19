@@ -6,7 +6,7 @@ dotenv.config()
 
 var message = ""
 
-export function writeToFileIssues(data) {
+function writeToFileIssues(data) {
     let store = []
     let count = 1
     try {
@@ -25,7 +25,7 @@ export function writeToFileIssues(data) {
             })
         })
 
-        fs.writeFile('./data.json', 
+        fs.writeFile('./git-orca.json', 
         JSON.stringify({
             total: store.length, 
             data: store
@@ -33,16 +33,16 @@ export function writeToFileIssues(data) {
         err => {
             if(err) console.log('Could not store')
         })
-        message = 'Check data.json for result'
+        message = 'Check git-orca.json for result'
     } catch (err) {
         message = 'There was an error storing your result'
     }
     return message
 }
 
-export function writeToFilePR(data) {
+function writeToFilePR(data) {
     try {
-        fs.writeFile('./data.json', 
+        fs.writeFile('./git-orca.json', 
         JSON.stringify({
             total: data.length, 
             data
@@ -50,7 +50,7 @@ export function writeToFilePR(data) {
         err => {
             if(err) console.log(err)
         })
-        message = 'Check data.json for results'
+        message = 'Check git-orca.json for results'
     } catch (err) {
         message = 'There was an error storing your result'
     }
@@ -92,14 +92,15 @@ export async function CLI(octokit, argv) {
         var selection = await select({
             message: 'Do you want to view issues or PR?',
             options: [
-                {value: 'issues', label: 'issues', hint: 'to contribute'},
+                {value: 'issues', label: 'issues'},
                 {value: 'PR', label: 'pull requests'}
             ]
         })
         close(repo_owner)
     }
 
-    argv.issues ? selection = 'issues' : selection = 'pr'
+    if (argv.issues) selection = 'issues'
+    if (argv.pr) selection = 'pr'
 
     if (!argv.open && !argv.closed) {
         var repo_state = await select({ 
@@ -151,7 +152,7 @@ export async function CLI(octokit, argv) {
     s.stop(color.green('Done fetching...'))
 
     if (git.data.length < 1) {
-        outro(color.red(`Found no ${selection}s here`))
+        outro(color.red(`Found no ${selection}(s) here`))
     } else {
         s.start(color.yellow('Writing to file...'))
         switch(selection)

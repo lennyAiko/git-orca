@@ -1,9 +1,11 @@
 import minimist from 'minimist'
 import { Octokit } from '@octokit/rest'
-import { CLI } from './helpers/index.js'
+import { CLI } from './helpers/commands.js'
 
-const octokit = new Octokit({ auth: process.env.GITHUB_ACCESS_TOKEN })
+export function main(token=null) {
+    const octokit = new Octokit({ auth: token })
 
-const argv = minimist(process.argv.slice(2))
+    const argv = minimist(process.argv.slice(2))
 
-CLI(octokit, argv)
+    CLI(octokit, argv)
+}
