@@ -9,3 +9,5 @@ export function main(token=null) {
 
     CLI(octokit, argv)
 }
+
+main()

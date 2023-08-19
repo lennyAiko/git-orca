@@ -9,7 +9,7 @@
   },
   "author": "Lennox Charles",
   "license": "MIT",
-  "git repository": "https://github.com/lennyAiko/git-orca",
+  "git repository": "https://github.com/lennyAiko/git-orca.git",
   "keywords": [
     "git", "github", "issues", "pr", "git-issues", "git-pr", "cli", "cli-app"
   ],
