@@ -4,60 +4,7 @@ import { intro, isCancel, outro, select, spinner, text, cancel } from '@clack/pr
 import dotenv from 'dotenv'
 dotenv.config()
 
-var message
-
-function writeToFileIssues(data) {
-    let store = []
-    let count = 1
-    try {
-        data.map(item => {
-            store.push({
-                count: count++,
-                url: item.url,
-                title: item.title,
-                state: item.state,
-                number: item.number,
-                user: item.user.login,
-                user_url: item.user.url,
-                created_at: item.created_at,
-                updated_at: item.updated_at,
-                body: item.body
-            })
-        })
-
-        fs.writeFile('./git-orca.json', 
-        JSON.stringify({
-            total: store.length, 
-            data: store,
-            watermark: "Generated with git-orca"
-        }, null, 2), 
-        err => {
-            if(err) console.log('Could not store')
-        })
-        message = 'Check git-orca.json for result'
-    } catch (err) {
-        message = 'There was an error storing your result'
-    }
-    return message
-}
-
-function writeToFilePR(data) {
-    try {
-        fs.writeFile('./git-orca.json', 
-        JSON.stringify({
-            total: data.length, 
-            data,
-            watermark: "Generated with git-orca"
-        }, null, 2), 
-        err => {
-            if(err) console.log(err)
-        })
-        message = 'Check git-orca.json for results'
-    } catch (err) {
-        message = 'There was an error storing your result'
-    }
-    return message
-}
+import {writeTxtIssues, writeJSONIssues, writeTxtPR, writeJSONPR} from './creator.js'
 
 function close(value) {
     if(isCancel(value)) {
@@ -133,6 +80,20 @@ export async function CLI(octokit, argv) {
         close(perPage)
     }
 
+    if (!argv.json && !argv.txt) {
+        var fileFormat = await select({
+            message: 'Select a file format',
+            options: [
+                {value: 'json', label: 'JSON'},
+                {value: 'txt', label: 'TEXT'}
+            ]
+        })
+        close(fileFormat)
+    }
+    
+    if (argv.json) fileFormat = 'json'
+    if (argv.txt) fileFormat = 'txt'
+    
     const s = spinner()
 
     s.start(color.yellow('Fetching...'))
@@ -161,19 +122,43 @@ export async function CLI(octokit, argv) {
         {
             case('issues'):
                 s.stop(color.green('Done writing to file...'))
-                outro(color.green(writeToFileIssues(
-                    git.data
-                    .map((item) => (item.pull_request ? null : item))
-                    .filter((item) => item))
-                ))
+                switch(fileFormat) 
+                {
+                    case('json'):
+                        outro(color.green(writeJSONIssues(
+                            git.data
+                            .map((item) => (item.pull_request ? null : item))
+                            .filter((item) => item))
+                        ))
+                        break
+                    case('txt'):
+                        outro(color.green(writeTxtIssues(
+                            git.data
+                            .map((item) => (item.pull_request ? null : item))
+                            .filter((item) => item))
+                        ))
+                        break
+                }
                 break
             case('pr'):
                 s.stop(color.green('Done writing to file...'))
-                outro(color.green(writeToFilePR(
-                    git.data
-                    .map((item) => item.pull_request)
-                    .filter((item) => item))
-                ))
+                switch(fileFormat) 
+                {
+                    case('json'):
+                        outro(color.green(writeJSONPR(
+                            git.data
+                            .map((item) => item.pull_request)
+                            .filter((item) => item))
+                        ))
+                        break
+                    case('txt'):
+                        outro(color.green(writeTxtPR(
+                            git.data
+                            .map((item) => item.pull_request)
+                            .filter((item) => item))
+                        ))
+                        break
+                }
                 break
             default: color.green(`Found ${git.data.length} issues / PRs here`)
         }
