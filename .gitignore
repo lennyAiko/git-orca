@@ -2,3 +2,4 @@ GOAL.txt
 node_modules/
 .env
 data.json
+git-orca.json

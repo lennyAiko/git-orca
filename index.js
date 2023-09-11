@@ -1,3 +1,5 @@
+#!/usr/bin/env node
+
 import minimist from 'minimist'
 import { Octokit } from '@octokit/rest'
 import { CLI } from './helpers/commands.js'
@@ -11,10 +13,4 @@ export function main(token = null) {
   CLI(octokit, argv)
 }
 
-const __filename = fileURLToPath(import.meta.url)
-
-let entryFile = process.argv?.[1];
-
-if (entryFile === __filename) {
-  main();
-}
+main()

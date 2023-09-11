@@ -1,6 +1,6 @@
 import fs from 'fs'
 import color from 'picocolors'
-import { confirm, intro, isCancel, outro, select, spinner, text, cancel } from '@clack/prompts'
+import { intro, isCancel, outro, select, spinner, text, cancel } from '@clack/prompts'
 import dotenv from 'dotenv'
 dotenv.config()
 
@@ -134,18 +134,18 @@ export async function CLI(octokit, argv) {
     const s = spinner()
 
     s.start(color.yellow('Fetching...'))
-
+    
     const git = await octokit.issues.listForRepo({
-        owner: argv.owner ? argv.owner : repoOwner,
-        repo: argv.name ? argv.name : repoName,
-        per_page: argv.pp ? argv.pp : perPage,
-        page: argv.p ? argv.p : pageNumber,
-        state: (function () {
+    owner: argv.owner ? argv.owner : repoOwner,
+    repo: argv.name ? argv.name : repoName,
+    per_page: argv.pp ? argv.pp : perPage,
+    page: argv.p ? argv.p : pageNumber,
+    state: (function () {
             if (!repoState) {
                 if (argv.open) return 'open'
                 if (argv.closed) return 'closed'
             }
-            return repo_state
+            return repoState
         })()
     })
 
