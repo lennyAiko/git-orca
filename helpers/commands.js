@@ -28,7 +28,8 @@ function writeToFileIssues(data) {
         fs.writeFile('./git-orca.json', 
         JSON.stringify({
             total: store.length, 
-            data: store
+            data: store,
+            watermark: "Generated with git-orca"
         }, null, 2), 
         err => {
             if(err) console.log('Could not store')
@@ -45,7 +46,8 @@ function writeToFilePR(data) {
         fs.writeFile('./git-orca.json', 
         JSON.stringify({
             total: data.length, 
-            data
+            data,
+            watermark: "Generated with git-orca"
         }, null, 2), 
         err => {
             if(err) console.log(err)
@@ -59,7 +61,7 @@ function writeToFilePR(data) {
 
 function close(value) {
     if(isCancel(value)) {
-        cancel('Thanks for trying Clack, see you later!')
+        cancel('Thanks for trying git-orca, see you later!')
         process.exit(0)
     }
 }
