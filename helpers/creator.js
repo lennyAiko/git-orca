@@ -24,6 +24,7 @@ User = ${item.user.login}
 User url = ${item.user.url}
 Created at = ${item.created_at}
 Updated at = ${item.updated_at}
+Closed at = ${item.closed_at}
 Body  = ${item.body ? item.body : "empty"}
 \n`)
             }
@@ -45,7 +46,18 @@ export function writeTxtPR(data) {
         data.map(
             item => {
                 fileStream.write(
-`${count++}. Url = ${item.url}\nHTML url =${item.html_url}\nDiff url = ${item.diff_url}\nPatch url = ${item.patch_url}\nMerged at = ${item.merged_at ? item.merged_at : "Not merged"}\n`
+`${count++}. Url = ${item.title}
+Url = ${item.url}
+State = ${item.state}
+Pull request = ${item.pull_request.url}
+Pull request number = ${item.number}
+User = ${item.user.login}
+User url = ${item.user.url}
+Created at = ${item.created_at}
+Updated at = ${item.updated_at}
+Closed at = ${item.closed_at}
+Body  = ${item.body ? item.body : "empty"}
+\n`
                 )
             }
         )
@@ -68,11 +80,12 @@ export function writeJSONIssues(data) {
                 url: item.url,
                 title: item.title,
                 state: item.state,
-                issue_number: item.number,
+                issueNumber: item.number,
                 user: item.user.login,
-                user_url: item.user.url,
-                created_at: item.created_at,
-                updated_at: item.updated_at,
+                userUrl: item.user.url,
+                createdAt: item.created_at,
+                updatedAt: item.updated_at,
+                closedAt: item.closed_at,
                 body: item.body ? item.body : "empty"
             })
         })
@@ -95,10 +108,28 @@ export function writeJSONIssues(data) {
 
 export function writeJSONPR(data) {
     try {
+        let store = []
+        let count = 1
+        data.map(item => {
+            store.push({
+                count: count++,
+                url: item.url,
+                title: item.title,
+                state: item.state,
+                pullRequest: item.pull_request.url,
+                pullRequestNumber: item.number,
+                user: item.user.login,
+                userUrl: item.user.url,
+                createdAt: item.created_at,
+                updatedAt: item.updated_at,
+                closedAt: item.closed_at,
+                body: item.body ? item.body : "empty"
+            })
+        })
         fs.writeFile('./git-orca.json', 
         JSON.stringify({
-            total: data.length, 
-            data,
+            total: store.length, 
+            data: store,
             watermark: "Generated with git-orca"
         }, null, 2), 
         err => {

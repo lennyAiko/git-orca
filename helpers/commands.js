@@ -42,7 +42,7 @@ export async function CLI(octokit, argv) {
             message: 'Do you want to view issues or PR?',
             options: [
                 {value: 'issues', label: 'issues'},
-                {value: 'PR', label: 'pull requests'}
+                {value: 'pr', label: 'pull requests'}
             ]
         })
         close(selection)
@@ -96,7 +96,7 @@ export async function CLI(octokit, argv) {
     
     const s = spinner()
 
-    s.start(color.yellow('Fetching...'))
+    s.start(color.yellow('Fetching'))
     
     const git = await octokit.issues.listForRepo({
     owner: argv.owner ? argv.owner : repoOwner,
@@ -112,16 +112,15 @@ export async function CLI(octokit, argv) {
         })()
     })
 
-    s.stop(color.green('Done fetching...'))
+    s.stop(color.green('Done fetching.'))
 
     if (git.data.length < 1) {
         outro(color.red(`Found no ${selection}(s) here`))
     } else {
-        s.start(color.yellow('Writing to file...'))
+        s.start(color.yellow('Writing to file'))
         switch(selection)
         {
             case('issues'):
-                s.stop(color.green('Done writing to file...'))
                 switch(fileFormat) 
                 {
                     case('json'):
@@ -139,26 +138,25 @@ export async function CLI(octokit, argv) {
                         ))
                         break
                 }
+                s.stop(color.green('Done writing to file.'))
                 break
             case('pr'):
-                s.stop(color.green('Done writing to file...'))
                 switch(fileFormat) 
                 {
                     case('json'):
                         outro(color.green(writeJSONPR(
                             git.data
-                            .map((item) => item.pull_request)
-                            .filter((item) => item))
+                            .filter((item) => item.pull_request))
                         ))
                         break
                     case('txt'):
                         outro(color.green(writeTxtPR(
                             git.data
-                            .map((item) => item.pull_request)
-                            .filter((item) => item))
+                            .filter((item) => item.pull_request))
                         ))
                         break
                 }
+                s.stop(color.green('Done writing to file.'))
                 break
             default: color.green(`Found ${git.data.length} issues / PRs here`)
         }
