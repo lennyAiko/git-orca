@@ -8,7 +8,7 @@ import {writeTxtIssues, writeJSONIssues, writeTxtPR, writeJSONPR} from './creato
 
 function close(value) {
     if(isCancel(value)) {
-        cancel('Thanks for trying git-orca, see you later!')
+        cancel('Thanks for using git-orca, see you later Champ!')
         process.exit(0)
     }
 }
