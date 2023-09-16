@@ -1,15 +1,15 @@
 import fs from 'fs'
 
-const cleaner = () => {
-    if (fs.existsSync("git-orca.txt")) {
-        fs.unlinkSync("git-orca.txt")
+const cleaner = (file) => {
+    if (fs.existsSync(file)) {
+        fs.unlinkSync(file)
     }
 }
 
 var message
 
 export function writeTxtIssues(data) {
-    cleaner()
+    cleaner("git-orca.txt")
     let count = 1
     var fileStream = fs.createWriteStream('./git-orca.txt', { flags: 'a' })
     try {
@@ -39,7 +39,7 @@ Body  = ${item.body ? item.body : "empty"}
 }
 
 export function writeTxtPR(data) {
-    cleaner()
+    cleaner("git-orca.txt")
     let count = 1
     var fileStream = fs.createWriteStream('./git-orca.txt', { flags: 'a' })
     try {
@@ -71,6 +71,7 @@ Body  = ${item.body ? item.body : "empty"}
 }
 
 export function writeJSONIssues(data) {
+    cleaner("git-orca.json")
     let store = []
     let count = 1
     try {
@@ -107,6 +108,7 @@ export function writeJSONIssues(data) {
 }
 
 export function writeJSONPR(data) {
+    cleaner("git-orca.json")
     try {
         let store = []
         let count = 1
