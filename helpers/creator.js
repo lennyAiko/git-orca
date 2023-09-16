@@ -12,6 +12,7 @@ export function writeTxtIssues(data) {
     cleaner("git-orca.txt")
     let count = 1
     var fileStream = fs.createWriteStream('./git-orca.txt', { flags: 'a' })
+    fileStream.write("ISSUES\n")
     try {
         data.map(
             item => {
@@ -42,6 +43,7 @@ export function writeTxtPR(data) {
     cleaner("git-orca.txt")
     let count = 1
     var fileStream = fs.createWriteStream('./git-orca.txt', { flags: 'a' })
+    fileStream.write("PRs\n")
     try {
         data.map(
             item => {
@@ -93,6 +95,7 @@ export function writeJSONIssues(data) {
 
         fs.writeFile('./git-orca.json', 
         JSON.stringify({
+            requested: "issues",
             total: store.length, 
             data: store,
             watermark: "Generated with git-orca"
@@ -130,6 +133,7 @@ export function writeJSONPR(data) {
         })
         fs.writeFile('./git-orca.json', 
         JSON.stringify({
+            requested: "PRs",
             total: store.length, 
             data: store,
             watermark: "Generated with git-orca"
