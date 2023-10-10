@@ -99,17 +99,19 @@ export async function CLI(octokit, argv) {
     s.start(color.yellow('Fetching'))
     
     const git = await octokit.issues.listForRepo({
-    owner: argv.owner ? argv.owner : repoOwner,
-    repo: argv.name ? argv.name : repoName,
-    per_page: argv.pp ? argv.pp : perPage,
-    page: argv.p ? argv.p : pageNumber,
-    state: (function () {
-            if (!repoState) {
-                if (argv.open) return 'open'
-                if (argv.closed) return 'closed'
+        owner: argv.owner ? argv.owner : repoOwner,
+        repo: argv.name ? argv.name : repoName,
+        per_page: argv.pp ? argv.pp : perPage,
+        page: argv.p ? argv.p : pageNumber,
+        state: (
+            function () {
+                if (!repoState) {
+                    if (argv.open) return 'open'
+                    if (argv.closed) return 'closed'
+                }
+                return repoState
             }
-            return repoState
-        })()
+        )()
     })
 
     s.stop(color.green('Done fetching.'))
@@ -118,6 +120,7 @@ export async function CLI(octokit, argv) {
         outro(color.red(`Found no ${selection}(s) here`))
     } else {
         s.start(color.yellow('Writing to file'))
+        const source = `${argv.owner ? argv.owner : repoOwner}/${argv.name ? argv.name : repoName}`
         switch(selection)
         {
             case('issues'):
@@ -127,14 +130,14 @@ export async function CLI(octokit, argv) {
                         outro(color.green(writeJSONIssues(
                             git.data
                             .map((item) => (item.pull_request ? null : item))
-                            .filter((item) => item))
+                            .filter((item) => item), source)
                         ))
                         break
                     case('txt'):
                         outro(color.green(writeTxtIssues(
                             git.data
                             .map((item) => (item.pull_request ? null : item))
-                            .filter((item) => item))
+                            .filter((item) => item), source)
                         ))
                         break
                 }
@@ -146,13 +149,13 @@ export async function CLI(octokit, argv) {
                     case('json'):
                         outro(color.green(writeJSONPR(
                             git.data
-                            .filter((item) => item.pull_request))
+                            .filter((item) => item.pull_request), source)
                         ))
                         break
                     case('txt'):
                         outro(color.green(writeTxtPR(
                             git.data
-                            .filter((item) => item.pull_request))
+                            .filter((item) => item.pull_request), source)
                         ))
                         break
                 }

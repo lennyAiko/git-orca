@@ -8,11 +8,13 @@ const cleaner = (file) => {
 
 var message
 
-export function writeTxtIssues(data) {
+export function writeTxtIssues(data, source) {
     cleaner("git-orca.txt")
     let count = 1
     var fileStream = fs.createWriteStream('./git-orca.txt', { flags: 'a' })
     fileStream.write("ISSUES\n")
+    fileStream.write(`Source: ${source}\n`)
+    fileStream.write("\n")
     try {
         data.map(
             item => {
@@ -39,11 +41,13 @@ Body  = ${item.body ? item.body : "empty"}
     return message
 }
 
-export function writeTxtPR(data) {
+export function writeTxtPR(data, source) {
     cleaner("git-orca.txt")
     let count = 1
     var fileStream = fs.createWriteStream('./git-orca.txt', { flags: 'a' })
     fileStream.write("PRs\n")
+    fileStream.write(`Source: ${source}\n`)
+    fileStream.write("\n")
     try {
         data.map(
             item => {
@@ -72,7 +76,7 @@ Body  = ${item.body ? item.body : "empty"}
     return message
 }
 
-export function writeJSONIssues(data) {
+export function writeJSONIssues(data, source) {
     cleaner("git-orca.json")
     let store = []
     let count = 1
@@ -96,6 +100,7 @@ export function writeJSONIssues(data) {
         fs.writeFile('./git-orca.json', 
         JSON.stringify({
             requested: "issues",
+            source: source,
             total: store.length, 
             data: store,
             watermark: "Generated with git-orca"
@@ -110,7 +115,7 @@ export function writeJSONIssues(data) {
     return message
 }
 
-export function writeJSONPR(data) {
+export function writeJSONPR(data, source) {
     cleaner("git-orca.json")
     try {
         let store = []
@@ -134,6 +139,7 @@ export function writeJSONPR(data) {
         fs.writeFile('./git-orca.json', 
         JSON.stringify({
             requested: "PRs",
+            source: source,
             total: store.length, 
             data: store,
             watermark: "Generated with git-orca"
